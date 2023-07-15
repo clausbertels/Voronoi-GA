@@ -12,7 +12,7 @@ ax.set_facecolor("white")
 
 # seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16), (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
 radius = 5
-seeds = generate_points(10, radius, "circle")
+seeds = generate_points(20, radius, "circle")
 
 vor = Voronoi(seeds, incremental=False)
 
@@ -71,6 +71,8 @@ plt.ylabel('Y')
 plt.title("Voronoi Diagram")
 plt.grid(True)
 plt.gca().set_aspect('equal')
+
+ax.add_patch(plt.Circle((0, 0), radius=5, fill=None))
 
 plt.show()
 
