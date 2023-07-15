@@ -14,8 +14,7 @@ def generate_points(n, radius, shape_toggle="circle"):
     while len(points) < n:
         x = random.uniform(-radius, radius)
         y = random.uniform(-radius, radius)
-        if (
-                x * x + y * y) <= radius * radius or shape_toggle == "square":  # Check if point is within the circle, if not then it skips it
+        if (x * x + y * y) <= radius * radius or shape_toggle == "square":  # Check if point is within the circle, if not then it skips it
             points.append((x, y))
 
     return points
@@ -23,13 +22,14 @@ def generate_points(n, radius, shape_toggle="circle"):
 
 # seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16), (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
 radius = 5
-seeds = generate_points(4, radius, "circle")
+seeds = generate_points(10, radius, "circle")
 
-vor = Voronoi(seeds, incremental=True)
+vor = Voronoi(seeds, incremental=False)
 
 voronoi_plot_2d(vor, ax=ax, line_colors="blue", line_width=1, point_colors="gray")
 
-vor.regions = [vor.regions[i] for i in vor.point_region]  # reorder vor.regions by vor.point_region indices
+vor.regions.remove([])
+vor.regions = [vor.regions[i-1] for i in vor.point_region]  # reorder vor.regions by vor.point_region indices
 
 
 def calculate_voronoi_cell_areas(vor):
