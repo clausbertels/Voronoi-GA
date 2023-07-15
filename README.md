@@ -3,6 +3,8 @@ Generate a voronoi diagram in a circle by given amount of points and their corre
 
 
 To-do List:
+
+
 Bound Infinite Regions (Project vertices at infinity to a Circle/Square) - 
 
 
