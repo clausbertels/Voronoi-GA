@@ -23,6 +23,8 @@ def calculate_voronoi_cell_areas(voronoi):
             areas.append(abs(area_signed(polygon)))
     return areas
 
+
+#this one is here just in case but it's very messy and not very useful, the plot can be made with a few lines of code anyways
 def display_points(points, radius):
     x_values = [point[0] for point in points]
     y_values = [point[1] for point in points]

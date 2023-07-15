@@ -1,41 +1,24 @@
 import random
 import matplotlib.pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
-from scipy.spatial import ConvexHull
 import numpy as np
 from skspatial.measurement import area_signed
+from functions.func import generate_points, calculate_voronoi_cell_areas
 
 ###### INITIATE PLOT
 fig = plt.figure(figsize=(8, 8), facecolor="lightgray")  # Adjust the figure size as needed
 ax = fig.add_subplot(111, aspect='equal')
 ax.set_facecolor("white")
 
-def generate_points(n, radius, shape_toggle="circle"):
-    points = []
-    while len(points) < n:
-        x = random.uniform(-radius, radius)
-        y = random.uniform(-radius, radius)
-        if (
-                x * x + y * y) <= radius * radius or shape_toggle == "square":  # Check if point is within the circle, if not then it skips it
-            points.append((x, y))
-
-    return points
-
-
-def calculate_voronoi_cell_areas(vor):
-    areas = []
-    for region in vor.regions:  # follows order of regions array
-        if -1 in region:
-            areas.append(0)
-        else:
-            polygon = [vor.vertices[i] for i in region]
-            areas.append(abs(area_signed(polygon)))
-    return areas
-
 
 # seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16), (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
 radius = 5
-seeds = generate_points(7, radius, "circle")
+seeds = generate_points(10, radius, "circle")
+
+circle = plt.Circle((0, 0), radius=5, fill=False)
+square = plt.Rectangle((-5, -5), 10, 10, fill=False)
+ax.add_patch(circle)
+
 
 vor = Voronoi(seeds, incremental=True)
 voronoi_plot_2d(vor, ax=ax, line_colors="blue", line_width=1, point_colors="gray")

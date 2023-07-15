@@ -3,18 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from scipy.spatial import Delaunay
 import numpy as np
-from scipy.spatial import ConvexHull
-
-
-def generate_points(n, radius, shape_toggle="circle"):
-    points = []
-    while len(points) < n:
-        x = random.uniform(-radius, radius)
-        y = random.uniform(-radius, radius)
-        if (x * x + y * y) <= radius * radius or shape_toggle == "square":  # Check if point is within the circle, if not then it skips it
-            points.append((x, y))
-
-    return points
+from functions.func import generate_points
 
 
 def display_points(points, radius):
