@@ -4,7 +4,7 @@ from scipy.spatial import voronoi_plot_2d
 import matplotlib.pyplot as plt
 
 
-def generate_points(n, circle_r, shape_toggle="circle", corner_toggle=False, corner_distance=10):
+def generate_points(n, circle_r, shape_toggle="circle", corner_toggle=False):
     points = []
     while len(points) < n:
         x = random.uniform(-circle_r, circle_r)
@@ -13,7 +13,7 @@ def generate_points(n, circle_r, shape_toggle="circle", corner_toggle=False, cor
         if (x * x + y * y) <= circle_r * circle_r or shape_toggle == "square":
             points.append((x, y))
     # below code is for adding corner points
-    circle_r += corner_distance
+    circle_r *= 2
     if corner_toggle:
         points.extend([(-circle_r, -circle_r), (-circle_r, circle_r),
                        (circle_r, circle_r), (circle_r, -circle_r)])

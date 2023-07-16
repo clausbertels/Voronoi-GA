@@ -13,7 +13,7 @@ ax.set_facecolor("white")
 
 # seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16), (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
 radius = 5
-seeds = generate_points(5, radius, "circle", True, 1)
+seeds = generate_points(5, radius, "circle", True)
 
 vor = Voronoi(seeds, incremental=True)
 
