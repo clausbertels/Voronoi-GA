@@ -7,10 +7,9 @@ import matplotlib.pyplot as plt
 def generate_points(n, circle_r, shape_toggle="circle", corner_toggle=False):
     points = []
     while len(points) < n:
-        x = random.uniform(-circle_r, circle_r)
-        y = random.uniform(-circle_r, circle_r)
+        x,y = random.uniform(-circle_r, circle_r)
         # Check if point is within the circle, if not then it skips it
-        if (x * x + y * y) <= circle_r * circle_r or shape_toggle == "square":
+        if (x**2 + y**2) <= circle_r**2 or shape_toggle == "square":
             points.append((x, y))
     # below code is for adding corner points
     circle_r *= 2
