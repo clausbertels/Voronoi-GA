@@ -21,7 +21,7 @@ def generate_points(n, circle_r, shape_toggle="circle"):
     return points
 
 
-def calculate_voronoi_cell_areas(voronoi_object):
+def calculate_reg_area(voronoi_object, index):
     areas = []
     for reg in voronoi_object.regions:
         if -1 in reg:
@@ -29,7 +29,7 @@ def calculate_voronoi_cell_areas(voronoi_object):
         else:
             polygon = [voronoi_object.vertices[i] for i in reg]
             areas.append(abs(area_signed(polygon)))
-    return areas
+    return areas[index]
 
 
 # seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16), (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
@@ -43,11 +43,9 @@ voronoi_plot_2d(vor, ax=ax, line_colors="blue", line_width=1, point_colors="gray
 vor.regions.remove([])
 vor.regions = [vor.regions[i - 1] for i in vor.point_region]  # reorder vor.regions by vor.point_region indices
 
-areas = calculate_voronoi_cell_areas(vor)
-
 # plot area index in correct location
 for i, region in enumerate(vor.regions):
-    plt.text(vor.points[i][0], vor.points[i][1] + 0.2, f'{i:.3g}', ha='center', va='center')
+    plt.text(vor.points[i][0], vor.points[i][1] + 0.2, f'{calculate_reg_area(vor,i):.2g}', ha='center', va='center')
 
 # Plot vertex ID's in simple order of vor.vertices
 for i, vertex in enumerate(vor.vertices):
