@@ -17,11 +17,12 @@ def generate_points(n, circle_r, shape_toggle="circle"):
         # Check if point is within the circle, if not then it skips it
         if (x * x + y * y) <= circle_r * circle_r or shape_toggle == "square":
             points.append((x, y))
-
+    circle_r += 2
+    points.extend([(-circle_r,-circle_r), (-circle_r,circle_r), (circle_r,circle_r), (circle_r,-circle_r)])
     return points
 
 
-def calculate_reg_area(voronoi_object, index):
+def calc_area(voronoi_object, index):
     areas = []
     for reg in voronoi_object.regions:
         if -1 in reg:
@@ -45,7 +46,7 @@ vor.regions = [vor.regions[i - 1] for i in vor.point_region]  # reorder vor.regi
 
 # plot area index in correct location
 for i, region in enumerate(vor.regions):
-    plt.text(vor.points[i][0], vor.points[i][1] + 0.2, f'{calculate_reg_area(vor,i):.2g}', ha='center', va='center')
+    plt.text(vor.points[i][0], vor.points[i][1] + 0.2, f'{calc_area(vor,i):.2g}', ha='center', va='center')
 
 # Plot vertex ID's in simple order of vor.vertices
 for i, vertex in enumerate(vor.vertices):
