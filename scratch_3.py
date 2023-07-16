@@ -17,6 +17,7 @@ def generate_points(n, circle_r, shape_toggle="circle"):
         # Check if point is within the circle, if not then it skips it
         if (x * x + y * y) <= circle_r * circle_r or shape_toggle == "square":
             points.append((x, y))
+    # edit for git, delete this comment line
     circle_r += 2
     points.extend([(-circle_r,-circle_r), (-circle_r,circle_r), (circle_r,circle_r), (circle_r,-circle_r)])
     return points
