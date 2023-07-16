@@ -3,22 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from scipy.spatial import Delaunay
 import numpy as np
-from functions.func import generate_points
-
-
-def display_points(points, radius):
-    x_values = [point[0] for point in points]
-    y_values = [point[1] for point in points]
-
-    plt.scatter(x_values, y_values)
-    plt.xlim(-(radius + 2), (radius + 2))  # the +1 is just to zoom out a bit more than the radius of the circle
-    plt.ylim(-(radius + 2), (radius + 2))
-    plt.xlabel('X')
-    plt.ylabel('Y')
-    plt.title(f'{len(points)} Points in Circle of Radius {radius}')
-    plt.grid(True)
-    plt.gca().set_aspect('equal')
-    plt.show()
+from functions.func import generate_points, display_points
 
 
 # generate the points

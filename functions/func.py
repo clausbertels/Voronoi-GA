@@ -3,12 +3,12 @@ from skspatial.measurement import area_signed
 from scipy.spatial import Voronoi, voronoi_plot_2d
 import matplotlib.pyplot as plt
 
-def generate_points(n, radius, shape_toggle="circle"):
+def generate_points(n, circle_radius, shape_toggle="circle"):
     points = []
     while len(points) < n:
-        x = random.uniform(-radius, radius)
-        y = random.uniform(-radius, radius)
-        if (x * x + y * y) <= radius * radius or shape_toggle == "square":  # Check if point is within the circle, if not then it skips it, or toggles the shape to square
+        x = random.uniform(-circle_radius, circle_radius)
+        y = random.uniform(-circle_radius, circle_radius)
+        if (x * x + y * y) <= circle_radius * circle_radius or shape_toggle == "square":  # Check if point is within the circle, if not then it skips it, or toggles the shape to square
             points.append((x, y))
 
     return points
