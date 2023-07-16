@@ -2,12 +2,36 @@ import random
 import matplotlib.pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from skspatial.measurement import area_signed
-from functions.func import calculate_voronoi_cell_areas, generate_points
 
 ###### INITIATE PLOT
 fig = plt.figure(figsize=(8, 8), facecolor="lightgray")  # Adjust the figure size as needed
 ax = fig.add_subplot(111, aspect='equal')
 ax.set_facecolor("white")
+
+
+def generate_points(n, circle_r, shape_toggle="circle"):
+    points = []
+    while len(points) < n:
+        x = random.uniform(-circle_r, circle_r)
+        y = random.uniform(-circle_r, circle_r)
+        # Check if point is within the circle, if not then it skips it
+        if (x * x + y * y) <= circle_r * circle_r or shape_toggle == "square":
+            points.append((x, y))
+    # edit for git, delete this comment line
+    circle_r += 2
+    points.extend([(-circle_r,-circle_r), (-circle_r,circle_r), (circle_r,circle_r), (circle_r,-circle_r)])
+    return points
+
+
+def calc_area(voronoi_object, index):
+    areas = []
+    for reg in voronoi_object.regions:
+        if -1 in reg:
+            areas.append(0)
+        else:
+            polygon = [voronoi_object.vertices[i] for i in reg]
+            areas.append(abs(area_signed(polygon)))
+    return areas[index]
 
 
 # seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16), (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
@@ -19,15 +43,11 @@ vor = Voronoi(seeds, incremental=False)
 voronoi_plot_2d(vor, ax=ax, line_colors="blue", line_width=1, point_colors="gray")
 
 vor.regions.remove([])
-vor.regions = [vor.regions[i-1] for i in vor.point_region]  # reorder vor.regions by vor.point_region indices
-
-
-# calculate area of each voronoi cell
-areas = calculate_voronoi_cell_areas(vor)
+vor.regions = [vor.regions[i - 1] for i in vor.point_region]  # reorder vor.regions by vor.point_region indices
 
 # plot area index in correct location
 for i, region in enumerate(vor.regions):
-    plt.text(vor.points[i][0], vor.points[i][1] + 0.2, f'{i:.3g}', ha='center', va='center')
+    plt.text(vor.points[i][0], vor.points[i][1] + 0.2, f'{calc_area(vor,i):.2g}', ha='center', va='center')
 
 # Plot vertex ID's in simple order of vor.vertices
 for i, vertex in enumerate(vor.vertices):
