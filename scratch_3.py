@@ -2,7 +2,7 @@ import random
 import matplotlib.pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from skspatial.measurement import area_signed
-import numpy as np
+from functions.func import generate_points, calc_area
 
 # INITIATE PLOT
 # Adjust the figure size as needed
@@ -11,35 +11,9 @@ ax = fig.add_subplot(111, aspect='equal')
 ax.set_facecolor("white")
 
 
-def generate_points(n, circle_r, shape_toggle="circle"):
-    points = []
-    while len(points) < n:
-        x = random.uniform(-circle_r, circle_r)
-        y = random.uniform(-circle_r, circle_r)
-        # Check if point is within the circle, if not then it skips it
-        if (x * x + y * y) <= circle_r * circle_r or shape_toggle == "square":
-            points.append((x, y))
-    # edit for git, delete this comment line
-    circle_r += 10
-    points.extend([(-circle_r, -circle_r), (-circle_r, circle_r),
-                  (circle_r, circle_r), (circle_r, -circle_r)])
-    return points
-
-
-def calc_area(voronoi_object, index):
-    areas = []
-    for reg in voronoi_object.regions:
-        if -1 in reg:
-            areas.append(0)
-        else:
-            polygon = [voronoi_object.vertices[i] for i in reg]
-            areas.append(abs(area_signed(polygon)))
-    return areas[index]
-
-
 # seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16), (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
 radius = 5
-seeds = generate_points(2, radius, "circle")
+seeds = generate_points(5, radius, "circle", True, 1)
 
 vor = Voronoi(seeds, incremental=True)
 
@@ -75,7 +49,7 @@ for i, vertex in enumerate(vor.vertices):
 # for i, seed in enumerate(seeds):
 #    points_with_id.append([vor.point_region[i], seed])
 
-#print regions containing -1 (should always be exactly 4 because of corner points)
+# print regions containing -1 (should always be exactly 4 because of corner points)
 for region in vor.regions:
     if -1 in region:
         print("regions containing -1: \n", region)
