@@ -43,7 +43,7 @@ def calculate_voronoi_cell_areas(vor):
             areas.append(abs(area_signed(polygon)))
    
     return areas
-def calculate_voronoi_region_areas_2(vor):
+
 
 area = calculate_voronoi_cell_areas(vor)
 print("area calc: \n", area)
