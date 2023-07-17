@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 def generate_points(n, circle_r, shape_toggle="circle", corner_toggle=False):
     points = []
     while len(points) < n:
-        x,y = random.uniform(-circle_r, circle_r)
+        x = random.uniform(-circle_r, circle_r)
+        y = random.uniform(-circle_r, circle_r)
         # Check if point is within the circle, if not then it skips it
         if (x**2 + y**2) <= circle_r**2 or shape_toggle == "square":
             points.append((x, y))
@@ -30,6 +31,8 @@ def calculate_voronoi_cell_areas(voronoi):
     return areas
 
 # this one is here just in case but it's very messy and not very useful, the plot can be made with a few lines of code anyways
+
+
 def display_points(points, radius):
     x_values = [point[0] for point in points]
     y_values = [point[1] for point in points]
@@ -47,6 +50,8 @@ def display_points(points, radius):
     voronoi_plot_2d(points)
 
 # this one calculates area of region for only selected index, which probably makes more sense than the other function
+
+
 def calc_area(voronoi_object, index):
     reg = voronoi_object.regions[index]
     if -1 in reg:
