@@ -13,7 +13,7 @@ ax.set_facecolor("white")
 
 # seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16), (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
 radius = 5
-seeds = generate_points(5, radius, "circle", True)
+seeds = generate_points(10, radius, "circle", True)
 
 vor = Voronoi(seeds, incremental=True)
 
@@ -29,7 +29,7 @@ vor.regions = [vor.regions[i] for i in vor.point_region]
 # plot area index in correct location
 for i, region in enumerate(vor.regions):
     plt.text(vor.points[i][0], vor.points[i][1] + 0.2,
-             f'{calc_area(vor,i):.3g}', ha='center', va='center')
+             f'{calc_area(vor,i, radius):.3g}', ha='center', va='center')
 
 # Plot vertex ID's in simple order of vor.vertices
 for i, vertex in enumerate(vor.vertices):

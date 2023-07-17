@@ -52,10 +52,20 @@ def display_points(points, radius):
 # this one calculates area of region for only selected index, which probably makes more sense than the other function
 
 
-def calc_area(voronoi_object, index):
+def calc_area(voronoi_object, index, radius):
     reg = voronoi_object.regions[index]
+
+    # if length of any point in region is greater than radius of circle, then print it
     if -1 in reg:
         return 0
     else:
         polygon = [voronoi_object.vertices[i] for i in reg]
+        # if region contains a point outside the circle, then print it in this format: region [region] contains n(amount) points outside: [outside points]
+        outside_points = []
+        for i in reg:
+            if (voronoi_object.vertices[i][0]**2 + voronoi_object.vertices[i][1]**2) > radius**2:
+                outside_points.append(i)
+        if outside_points:
+            print(f"region {reg} contains {len(outside_points)} points outside: {outside_points}")
         return abs(area_signed(polygon))
+
