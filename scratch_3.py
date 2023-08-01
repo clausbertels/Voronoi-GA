@@ -1,8 +1,9 @@
 import random
+import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from skspatial.measurement import area_signed
-from functions.func import generate_points, calc_area
+from functions.func import generate_points, calc_area, find_connected_vertices, ridges_of_region, find_ridges_containing_index, is_ridge_intersecting_circle
 
 # INITIATE PLOT
 # Adjust the figure size as needed
@@ -10,15 +11,18 @@ fig = plt.figure(figsize=(8, 8), facecolor="lightgray")
 ax = fig.add_subplot(111, aspect='equal')
 ax.set_facecolor("white")
 
+radius = 1
+# seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16),
+#         (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
+seeds = [[0, 0], [-1, -1], [1, 1], [0, 1], [0, -1], [1, -1],
+         [-1, 1], [1, 0], [-1, 0]]  # grid point pattern
+seeds = generate_points(10, radius, "circle", False)
 
-# seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16), (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
-radius = 5
-seeds = generate_points(10, radius, "circle", True)
+seeds.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
+              (2*radius, -2*radius), (2*radius, 2*radius)])
+
 
 vor = Voronoi(seeds, incremental=True)
-
-voronoi_plot_2d(vor, ax=ax, line_colors="blue",
-                line_width=1, point_colors="gray")
 
 # remove all empty arrays(in our case only one)
 # vor.regions.remove([])
@@ -26,10 +30,12 @@ voronoi_plot_2d(vor, ax=ax, line_colors="blue",
 # reorder vor.regions by vor.point_region indices
 vor.regions = [vor.regions[i] for i in vor.point_region]
 
+# print("vor.vertices before plotting the area", vor.vertices)
 # plot area index in correct location
+
 for i, region in enumerate(vor.regions):
     plt.text(vor.points[i][0], vor.points[i][1] + 0.2,
-             f'{calc_area(vor,i, radius):.3g}', ha='center', va='center')
+             f'{calc_area(vor,i, radius):.5g}', ha='center', va='center')
 
 # Plot vertex ID's in simple order of vor.vertices
 for i, vertex in enumerate(vor.vertices):
@@ -50,28 +56,44 @@ for i, vertex in enumerate(vor.vertices):
 #    points_with_id.append([vor.point_region[i], seed])
 
 # print regions containing -1 (should always be exactly 4 because of corner points)
-for region in vor.regions:
-    if -1 in region:
-        print("regions containing -1: \n", region)
+# for region in vor.regions:
+    # if -1 in region:
+    # print("regions containing -1: \n", region)
 
 # print("points_with_id: \n", points_with_id)
 # print("vor.point_region: \n", vor.point_region)
-print("vor.regions (reordered): \n", vor.regions)
-# print("vor.vertices: \n", vor.vertices)
+#print("vor.regions (reordered): \n", vor.regions)
+#print("vor.vertices: \n", vor.vertices)
 # print("vor.points (=seeds): \n", vor.points, "\n")
 
 # print("vor.ridge_points: \n", vor.ridge_points)
-# print("vor.ridge_vertices: \n", vor.ridge_vertices, "\n")
+#print("vor.ridge_vertices: \n", vor.ridge_vertices, "\n")
 
-bounded_regions = []
-for arr in vor.regions:
-    if arr and not any(num == -1 for num in arr):
-        bounded_regions.append(arr)
+# print connected vertices to each vertex
+# for i in range(len(vor.vertices)):
+#    ridges = find_connected_vertices(vor, i)
+#    print("ridges containing index: \n", ridges, "\n")
 
-# print("bounded_regions: \n", bounded_regions)
+# print how many ridges intersect circle
+# is_intersecting = []
+# for i in range(len(vor.ridge_vertices)):
+#    is_intersecting.append(is_ridge_intersecting_circle(radius, vor, i))
+# print(is_intersecting.count(True))
+
+# print ridges of each region
+# for i in range(len(vor.regions)):
+#    ridges_in_region = (ridges_of_region(vor, i))
+#    print("Ridges in region:", ridges_in_region)
+
+#Print total area
+total_area = 0
+for reg in range(len(vor.regions)):
+    total_area += calc_area(vor, reg, radius)
+print("Total area:", total_area)
 
 # PLOT
-
+voronoi_plot_2d(vor, ax=ax, line_colors="blue",
+                line_width=1, point_colors="gray")
 plt.xlim(-(radius + 2), (radius + 2))
 plt.ylim(-(radius + 2), (radius + 2))
 plt.xlabel('X')
@@ -80,7 +102,7 @@ plt.title("Voronoi Diagram")
 plt.grid(True)
 plt.gca().set_aspect('equal')
 
-ax.add_patch(plt.Circle((0, 0), radius=5, fill=None))
+ax.add_patch(plt.Circle((0, 0), radius=radius, fill=False, color='gray'))
 
 plt.show()
 
