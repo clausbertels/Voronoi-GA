@@ -3,7 +3,7 @@ from shapely.geometry import LineString
 import random
 import math
 from skspatial.measurement import area_signed
-from scipy.spatial import voronoi_plot_2d
+from scipy.spatial import voronoi_plot_2d, ConvexHull
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -101,12 +101,12 @@ def calc_area(voronoi_object, index, radius):
             intersection_points = np.array(intersection_points)
             polygon = np.append(polygon, intersection_points, axis=0)
 
-        polygon_area = abs(area_signed(polygon))
+        polygon_area = ConvexHull(polygon).volume
         print(polygon)
         print("polygon_area", polygon_area)
 
         if len(polygon) > 2:
-            return polygon_area
+            return polygon_area + segment_area
         else:
             return 0
 
@@ -232,7 +232,3 @@ def area_signed1(polygon):
     return area / 2.0
 
 
-polygon_array = [[0.5, -0.5], [0.5, 0.5],
-                 [4.97493719, -0.5], [4.97493719, 0.5]]
-# polygon_array = [[0.5, 0.5], [4.9, 0.5], [0.5, 4.9]]
-print(abs(area_signed1(polygon_array)))

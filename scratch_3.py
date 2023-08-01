@@ -16,7 +16,7 @@ radius = 1
 #         (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
 seeds = [[0, 0], [-1, -1], [1, 1], [0, 1], [0, -1], [1, -1],
          [-1, 1], [1, 0], [-1, 0]]  # grid point pattern
-seeds = generate_points(10, radius, "circle", False)
+#seeds = generate_points(10, radius, "circle", False)
 
 seeds.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
               (2*radius, -2*radius), (2*radius, 2*radius)])
@@ -62,12 +62,12 @@ for i, vertex in enumerate(vor.vertices):
 
 # print("points_with_id: \n", points_with_id)
 # print("vor.point_region: \n", vor.point_region)
-#print("vor.regions (reordered): \n", vor.regions)
-#print("vor.vertices: \n", vor.vertices)
+# print("vor.regions (reordered): \n", vor.regions)
+# print("vor.vertices: \n", vor.vertices)
 # print("vor.points (=seeds): \n", vor.points, "\n")
 
 # print("vor.ridge_points: \n", vor.ridge_points)
-#print("vor.ridge_vertices: \n", vor.ridge_vertices, "\n")
+# print("vor.ridge_vertices: \n", vor.ridge_vertices, "\n")
 
 # print connected vertices to each vertex
 # for i in range(len(vor.vertices)):
@@ -85,7 +85,7 @@ for i, vertex in enumerate(vor.vertices):
 #    ridges_in_region = (ridges_of_region(vor, i))
 #    print("Ridges in region:", ridges_in_region)
 
-#Print total area
+# Print total area
 total_area = 0
 for reg in range(len(vor.regions)):
     total_area += calc_area(vor, reg, radius)
