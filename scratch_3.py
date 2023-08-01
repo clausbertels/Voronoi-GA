@@ -1,9 +1,12 @@
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+
 from scipy.spatial import Voronoi, voronoi_plot_2d
 from skspatial.measurement import area_signed
-from functions.func import generate_points, calc_area, find_connected_vertices, ridges_of_region, find_ridges_containing_index, is_ridge_intersecting_circle
+
+from functions.func import (calc_area, find_connected_vertices,
+                            find_ridges_containing_index, generate_points, ridges_of_region)
 
 # INITIATE PLOT
 # Adjust the figure size as needed
@@ -11,12 +14,12 @@ fig = plt.figure(figsize=(8, 8), facecolor="lightgray")
 ax = fig.add_subplot(111, aspect='equal')
 ax.set_facecolor("white")
 
-radius = 1
+radius = 10
 # seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16),
 #         (1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
 seeds = [[0, 0], [-1, -1], [1, 1], [0, 1], [0, -1], [1, -1],
          [-1, 1], [1, 0], [-1, 0]]  # grid point pattern
-#seeds = generate_points(10, radius, "circle", False)
+seeds = generate_points(1000, radius, "circle", False)
 
 seeds.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
               (2*radius, -2*radius), (2*radius, 2*radius)])
@@ -31,11 +34,13 @@ vor = Voronoi(seeds, incremental=True)
 vor.regions = [vor.regions[i] for i in vor.point_region]
 
 # print("vor.vertices before plotting the area", vor.vertices)
-# plot area index in correct location
-
+# plot area index in correct location and calculate total area
+total_area = 0
 for i, region in enumerate(vor.regions):
     plt.text(vor.points[i][0], vor.points[i][1] + 0.2,
              f'{calc_area(vor,i, radius):.5g}', ha='center', va='center')
+    total_area += calc_area(vor, i, radius)
+print("Total area:", total_area)
 
 # Plot vertex ID's in simple order of vor.vertices
 for i, vertex in enumerate(vor.vertices):
@@ -85,11 +90,8 @@ for i, vertex in enumerate(vor.vertices):
 #    ridges_in_region = (ridges_of_region(vor, i))
 #    print("Ridges in region:", ridges_in_region)
 
-# Print total area
-total_area = 0
-for reg in range(len(vor.regions)):
-    total_area += calc_area(vor, reg, radius)
-print("Total area:", total_area)
+
+
 
 # PLOT
 voronoi_plot_2d(vor, ax=ax, line_colors="blue",
@@ -98,7 +100,7 @@ plt.xlim(-(radius + 2), (radius + 2))
 plt.ylim(-(radius + 2), (radius + 2))
 plt.xlabel('X')
 plt.ylabel('Y')
-plt.title("Voronoi Diagram")
+plt.title("Voronoi Diagram, Total Area of cells: " + str(total_area))
 plt.grid(True)
 plt.gca().set_aspect('equal')
 

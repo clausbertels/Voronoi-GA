@@ -1,5 +1,3 @@
-from shapely.geometry import Point
-from shapely.geometry import LineString
 import random
 import math
 from skspatial.measurement import area_signed
@@ -35,8 +33,6 @@ def calculate_voronoi_cell_areas(voronoi):
     return areas
 
 # this one is here just in case but it's very messy and not very useful, the plot can be made with a few lines of code anyways
-
-
 def display_points(points, radius):
     x_values = [point[0] for point in points]
     y_values = [point[1] for point in points]
@@ -54,11 +50,9 @@ def display_points(points, radius):
     voronoi_plot_2d(points)
 
 # this one calculates area of region for only selected index, which probably makes more sense than the other function
-
-
 def calc_area(voronoi_object, index, radius):
-    reg = voronoi_object.regions[index].copy()
-    vertices = voronoi_object.vertices.copy()
+    reg = voronoi_object.regions[index]
+    vertices = voronoi_object.vertices
 
     # if the region is unbounded, return area of 0
     if -1 in reg:
@@ -76,9 +70,9 @@ def calc_area(voronoi_object, index, radius):
                 point1 = vertices[ridge[0]]
                 point2 = vertices[ridge[1]]
                 intersection_points.append(
-                    circle_line_segment_intersection((0, 0), radius, point1, point2))
+                    circle_line_segment_intersection(radius, point1, point2))
 
-            # remove outside vertices from region
+            # remove vertices outside circle from region
             reg = [vertex for vertex in reg if vertex not in outside_vertices]
 
             # remove empty arrays in intersection points
@@ -102,7 +96,6 @@ def calc_area(voronoi_object, index, radius):
             polygon = np.append(polygon, intersection_points, axis=0)
 
         polygon_area = ConvexHull(polygon).volume
-        print(polygon)
         print("polygon_area", polygon_area)
 
         if len(polygon) > 2:
@@ -124,6 +117,17 @@ def find_ridges_containing_index(voronoi_object, index):
     return ridges_indices
 
 
+def ridges_of_region(voronoi_object, index):
+    region = voronoi_object.regions[index]
+    ridges = []
+    if -1 in region:
+        return ridges
+    for ridge in voronoi_object.ridge_vertices:
+        if all(vertex in region for vertex in ridge):
+            ridges.append(ridge)
+    return ridges
+
+
 def find_connected_vertices(voronoi_object, index):
     # find all ridges that contain the given index
     ridges_indices = find_ridges_containing_index(voronoi_object, index)
@@ -139,9 +143,7 @@ def find_connected_vertices(voronoi_object, index):
     return connected_vertices
 
 # this function wasn't made by me, I have no idea how but it works
-
-
-def circle_line_segment_intersection(center, radius, p1, p2):
+def circle_line_segment_intersection(radius, p1, p2):
     dx, dy = p2[0] - p1[0], p2[1] - p1[1]
     dr = math.sqrt(dx**2 + dy**2)
     D = p1[0]*p2[1] - p2[0]*p1[1]
@@ -158,12 +160,12 @@ def circle_line_segment_intersection(center, radius, p1, p2):
 
         # check if the intersection points are within the bounds of the line segment
         if (min(p1[0], p2[0]) <= x1 <= max(p1[0], p2[0])) and (min(p1[1], p2[1]) <= y1 <= max(p1[1], p2[1])):
-            intersection1 = [x1 + center[0], y1 + center[1]]
+            intersection1 = [x1, y1]
         else:
             intersection1 = None
 
         if (min(p1[0], p2[0]) <= x2 <= max(p1[0], p2[0])) and (min(p1[1], p2[1]) <= y2 <= max(p1[1], p2[1])):
-            intersection2 = [x2 + center[0], y2 + center[1]]
+            intersection2 = [x2, y2]
         else:
             intersection2 = None
 
@@ -172,7 +174,7 @@ def circle_line_segment_intersection(center, radius, p1, p2):
 
 
 # find ridges containing a point inside and one outside the circle
-def is_ridge_intersecting_circle(radius, voronoi_object, index):
+
     vertex_indices = voronoi_object.ridge_vertices[index]
     ridge = []
     for index in vertex_indices:
@@ -188,17 +190,6 @@ def is_ridge_intersecting_circle(radius, voronoi_object, index):
             return False
 
 
-def ridges_of_region(voronoi_object, index):
-    region = voronoi_object.regions[index]
-    ridges = []
-    if -1 in region:
-        return ridges
-    for ridge in voronoi_object.ridge_vertices:
-        if all(vertex in region for vertex in ridge):
-            ridges.append(ridge)
-    return ridges
-
-
 def circle_segment_area(p1, p2, radius):
     chord_length = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
     theta = math.acos((radius**2 + radius**2 - chord_length**2)/(2*radius**2))
@@ -206,29 +197,10 @@ def circle_segment_area(p1, p2, radius):
     return area
 
 
-intersection_points2 = [[(0, -1), (0, 1)]]
-# print(intersection_points2)
-# print(intersection_points2[0])
-# print(intersection_points2[0][0])
-# print(intersection_points2[0][1])
-p1 = intersection_points2[0][0]
-p2 = intersection_points2[0][1]
-
-
-intersection = circle_line_segment_intersection((0, 0), 1, p1, p2)
-print(intersection)
-print(type(intersection))
-
-segment_area = circle_segment_area(p1, p2, 1)
-print(segment_area)
-
-
-def area_signed1(polygon):
+def shoelace_algo(polygon):
     n = len(polygon)
     area = 0.0
     for i in range(n):
         j = (i + 1) % n
         area += polygon[i][0] * polygon[j][1] - polygon[j][0] * polygon[i][1]
     return area / 2.0
-
-
