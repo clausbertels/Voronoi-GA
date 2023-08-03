@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def generate_points(n, circle_r, shape_toggle="circle", corner_toggle=False):
+def generate_points(n, circle_r, shape_toggle="circle"):
     points = []
     while len(points) < n:
         x = random.uniform(-circle_r, circle_r)
@@ -16,9 +16,6 @@ def generate_points(n, circle_r, shape_toggle="circle", corner_toggle=False):
             points.append((x, y))
     # below code is for adding corner points
     circle_r *= 2
-    if corner_toggle:
-        points.extend([(-circle_r, -circle_r), (-circle_r, circle_r),
-                       (circle_r, circle_r), (circle_r, -circle_r)])
     return points
 
 
@@ -49,8 +46,10 @@ def display_points(points, radius):
     plt.show()
     voronoi_plot_2d(points)
 
-# this one calculates area of region for only selected index, which probably makes more sense than the other function
+
 def calc_area(voronoi_object, index, radius):
+    # this function calculates area of region for only selected index
+
     reg = voronoi_object.regions[index]
     vertices = voronoi_object.vertices
 
@@ -59,8 +58,7 @@ def calc_area(voronoi_object, index, radius):
         return 0
 
     else:
-        outside_vertices = [vertex for vertex in reg if vertices[vertex]
-                            [0]**2 + vertices[vertex][1]**2 > radius**2]
+        outside_vertices = [vertex for vertex in reg if vertices[vertex][0]**2 + vertices[vertex][1]**2 > radius**2]
         intersection_points = []
         segment_area = 0
         if outside_vertices:
@@ -75,10 +73,10 @@ def calc_area(voronoi_object, index, radius):
             # remove vertices outside circle from region
             reg = [vertex for vertex in reg if vertex not in outside_vertices]
 
-            # remove empty arrays in intersection points
-            intersection_points = [x for x in intersection_points if any(x)]
+            # remove empty arrays in intersection points (apparently not needed)
+            #intersection_points = [x for x in intersection_points if any(x)]
 
-            # remove double brackets in intersection point array
+            # remove double brackets in intersection point array (didn't write this, it's so weird, but it works)
             intersection_points = [item for sublist in intersection_points for item in (
                 sublist if isinstance(sublist, list) else [sublist])]
 
@@ -87,7 +85,7 @@ def calc_area(voronoi_object, index, radius):
                 intersection_points[0], intersection_points[1], radius)
             print("Segment area:", segment_area)
 
-        # calculate polygon and polygon area
+        # add intersection points to polygon
         polygon = [vertices[i] for i in reg]
         if intersection_points:
             intersection_points = [tuple(point)
@@ -95,10 +93,11 @@ def calc_area(voronoi_object, index, radius):
             intersection_points = np.array(intersection_points)
             polygon = np.append(polygon, intersection_points, axis=0)
 
-        polygon_area = ConvexHull(polygon).volume
-        print("polygon_area", polygon_area)
-
+        
+        # calculate polygon area and add the segment area
         if len(polygon) > 2:
+            polygon_area = ConvexHull(polygon).volume
+            print("polygon_area", polygon_area)
             return polygon_area + segment_area
         else:
             return 0
@@ -106,14 +105,10 @@ def calc_area(voronoi_object, index, radius):
 
 def find_ridges_containing_index(voronoi_object, index):
     # find all ridges that contain the given index
-    # ridges = []
     ridges_indices = []
-    counter = -1
-    for ridge in voronoi_object.ridge_vertices:
-        counter += 1
+    for i,ridge in enumerate(voronoi_object.ridge_vertices):
         if np.isin(index, ridge).any():
-            # ridges.append(ridge)
-            ridges_indices.append(counter)
+            ridges_indices.append(i)
     return ridges_indices
 
 
@@ -121,7 +116,7 @@ def ridges_of_region(voronoi_object, index):
     region = voronoi_object.regions[index]
     ridges = []
     if -1 in region:
-        return ridges
+        return []
     for ridge in voronoi_object.ridge_vertices:
         if all(vertex in region for vertex in ridge):
             ridges.append(ridge)
