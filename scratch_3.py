@@ -2,7 +2,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
-from functions.func import (calc_area, generate_points)
+from functions.func import (calc_area, generate_points, fitness)
 
 # INITIATE PLOT
 # Adjust the figure size as needed
@@ -13,16 +13,23 @@ ax.set_facecolor("white")
 
 # INITIAL PARAMETERS
 radius = 10
-#seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16),(1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
-#seeds = [[0, 0], [-1, -1], [1, 1], [0, 1], [0, -1], [1, -1], [-1, 1], [1, 0], [-1, 0]]  # grid point pattern
-seeds = generate_points(100, radius, "circle")
+input_areas = [1,1,1,1,1,1,1,1,1]
+#points = [(0.15, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16),(1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
+#points = [[0, 0], [-1, -1], [1, 1], [0, 1], [0, -1], [1, -1], [-1, 1], [1, 0], [-1, 0]]  # grid point pattern
+#points = generate_points(len(input_areas), radius, "circle")
+
+prevGen = []
+for _ in range(100):  # generate 100 random lists of length n with each tuple set within circle bounds
+    points = generate_points(len(input_areas), radius, "circle")
+    prevGen.append(points)
+    points = [] 
 
 # Add 4 corner points
-seeds.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
+points.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
               (2*radius, -2*radius), (2*radius, 2*radius)])
 
 # Create Voronoi Diagram
-vor = Voronoi(seeds)
+vor = Voronoi(points)
 
 # reorder vor.regions by vor.point_region indices
 vor.regions = [vor.regions[i] for i in vor.point_region]
@@ -34,8 +41,9 @@ total_area = 0
 for i, region in enumerate(vor.regions):
     cell_area = 0
     cell_area = calc_area(vor,i,radius)
+    
     plt.text(vor.points[i][0], vor.points[i][1] + 0.2,
-            f'{cell_area:.3g}', ha='center', va='center')
+            f'{i:.3g}', ha='center', va='center')
     total_area += cell_area
 print("Total area:", total_area)
 
@@ -91,7 +99,7 @@ for i, vertex in enumerate(vor.vertices):
 
 
 
-
+print("Fitness:",fitness(points, input_areas, vor, radius))
 # PLOT
 voronoi_plot_2d(vor, ax=ax, line_colors="blue",
                 line_width=1, point_colors="gray")

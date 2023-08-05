@@ -13,7 +13,6 @@ def generate_points(n, circle_r, shape_toggle="circle"):
         # Check if point is within the circle, if not then it skips it
         if (x**2 + y**2) <= circle_r**2 or shape_toggle == "square":
             points.append((x, y))
-    # below code is for adding corner points
     circle_r *= 2
     return points
 
@@ -184,3 +183,24 @@ def shoelace_algo(polygon):
         j = (i + 1) % n
         area += polygon[i][0] * polygon[j][1] - polygon[j][0] * polygon[i][1]
     return area / 2.0
+
+def map_to_01(array):
+    sum_array = sum(array)
+    for i,n in enumerate(array):
+        array[i] = n / sum_array
+    return array
+
+def mapper(number,total):
+    return number/total
+
+
+def fitness(points, input_areas, voronoi_object, radius):
+    print(len(points))
+    print(len(input_areas))
+    input_areas = map_to_01(input_areas)
+    sum_areas = 0    
+    for i in range(len(points)-4):  # calculate area for every seed
+        sum_areas += abs(mapper(calc_area(voronoi_object, i, radius), 3.141592653589*radius**2)
+                          - mapper(input_areas[i],sum(input_areas)))
+          # sum the differences (using abs to calculate the magnitude of deltas
+    return abs(1 / sum_areas)  # this is the fitness score
