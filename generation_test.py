@@ -13,7 +13,7 @@ treshold = 999
 iterations = 10
 
 prevGen = []
-for _ in range(iterations):  # generate 100 random lists of length n with each tuple set within circle bounds
+for _ in range(iterations):  # generate x random lists of length n with each tuple set within circle bounds
     points = generate_points(areas_length, radius, "circle")
     points.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
               (2*radius, -2*radius), (2*radius, 2*radius)])
@@ -23,7 +23,7 @@ for _ in range(iterations):  # generate 100 random lists of length n with each t
 
 for g in range(generations):  # ######## GENERATION LOOP ##########
     ranked = []
-    for solution in prevGen:  # list every solution with its fitness score
+    for solution in prevGen:  # list every solution with its fitness score, [solution] == [points]
         vor = Voronoi(solution)
         ranked.append((fitness(solution, input_areas, vor, radius), solution))
     ranked.sort()
@@ -43,7 +43,7 @@ for g in range(generations):  # ######## GENERATION LOOP ##########
             best_ordered[i].append(e[1][i])
 
     newGen = []
-    for _ in range(iterations):  # generate a hundred solutions based on the previous hundred random solutions
+    for _ in range(iterations):  # generate x solutions based on the previous hundred random solutions
         for c in range(areas_length):
             x = random.choice(best_ordered[c])[0] * random.uniform(0.99, 1.01)
             y = random.choice(best_ordered[c])[1] * random.uniform(0.99, 1.01)
