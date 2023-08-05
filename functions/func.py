@@ -81,7 +81,7 @@ def calc_area(voronoi_object, index, radius):
             # calculate circle segment area
             segment_area = circle_segment_area(
                 intersection_points[0], intersection_points[1], radius)
-            print("Segment area:", segment_area)
+            # print("Segment area:", segment_area)
 
         # create polygon from region vertices
         polygon = [vertices[i] for i in reg]
@@ -98,7 +98,7 @@ def calc_area(voronoi_object, index, radius):
         # calculate polygon area and add the segment area
         if len(polygon) > 2:
             polygon_area = ConvexHull(polygon).volume
-            print("polygon_area", polygon_area)
+            # print("polygon_area", polygon_area)
             return polygon_area + segment_area
         else:
             return 0
@@ -195,8 +195,8 @@ def mapper(number,total):
 
 
 def fitness(points, input_areas, voronoi_object, radius):
-    print(len(points))
-    print(len(input_areas))
+    # print(len(points))
+    # print(len(input_areas))
     input_areas = map_to_01(input_areas)
     sum_areas = 0    
     for i in range(len(points)-4):  # calculate area for every seed
