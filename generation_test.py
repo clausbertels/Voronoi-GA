@@ -11,14 +11,6 @@ generations = 100
 treshold = 999
 iterations = 10
 
-prevGen = []
-for _ in range(100):  # generate 100 random lists of length n with each tuple set within circle bounds
-    points = generate_points(areas_length, radius, "circle")
-    points.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
-              (2*radius, -2*radius), (2*radius, 2*radius)])
-    prevGen.append(points)
-    points = [] 
-
 
 
 for g in range(generations):  # ######## GENERATION LOOP ##########
