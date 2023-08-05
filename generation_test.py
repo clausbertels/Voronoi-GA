@@ -43,3 +43,5 @@ for g in range(generations):  # ######## GENERATION LOOP ##########
         co = []
 
     prevGen = newGen
+
+print("Hello world")
