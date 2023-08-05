@@ -1,6 +1,6 @@
 import random
 import math
-from scipy.spatial import voronoi_plot_2d, ConvexHull
+from scipy.spatial import Voronoi, voronoi_plot_2d, ConvexHull
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -194,13 +194,13 @@ def mapper(number,total):
     return number/total
 
 
-def fitness(points, input_areas, voronoi_object, radius):
+def fitness(points, input_areas, radius):
     # print(len(points))
     # print(len(input_areas))
-    input_areas = map_to_01(input_areas)
+    circle_area = np.pi*radius**2
     sum_areas = 0    
     for i in range(len(points)-4):  # calculate area for every seed
-        sum_areas += abs(mapper(calc_area(voronoi_object, i, radius), 3.141592653589*radius**2)
-                          - mapper(input_areas[i],sum(input_areas)))
+        sum_areas += abs(mapper(calc_area(Voronoi(points), i, radius), circle_area)
+                          - mapper(input_areas[i], sum(input_areas)))
           # sum the differences (using abs to calculate the magnitude of deltas
     return abs(1 / sum_areas)  # this is the fitness score
