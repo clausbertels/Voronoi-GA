@@ -2,7 +2,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.spatial import Voronoi, voronoi_plot_2d
-from functions.func import (calc_area, generate_points, fitness, generation_loop)
+from functions.func import (calc_area, generate_points, fitness)
 
 radius = 10
 input_areas = [1,1,1,1,1,1,1,1,1]
@@ -13,7 +13,7 @@ iterations = 10
 
 prevGen = []
 for _ in range(100):  # generate 100 random lists of length n with each tuple set within circle bounds
-    points = generate_points(areas_length), radius, "circle")
+    points = generate_points(areas_length, radius, "circle")
     points.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
               (2*radius, -2*radius), (2*radius, 2*radius)])
     prevGen.append(points)
