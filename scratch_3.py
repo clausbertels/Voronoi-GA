@@ -6,7 +6,7 @@ from functions.func import (calc_area, generate_points)
 
 # INITIATE PLOT
 # Adjust the figure size as needed
-fig = plt.figure(figsize=(8, 8), facecolor="lightgray")
+fig = plt.figure(figsize=(8, 8), facecolor="gray")
 ax = fig.add_subplot(111, aspect='equal')
 ax.set_facecolor("white")
 
@@ -15,7 +15,7 @@ ax.set_facecolor("white")
 radius = 10
 #seeds = [(0.1, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16),(1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
 #seeds = [[0, 0], [-1, -1], [1, 1], [0, 1], [0, -1], [1, -1], [-1, 1], [1, 0], [-1, 0]]  # grid point pattern
-seeds = generate_points(3, radius, "circle")
+seeds = generate_points(100, radius, "circle")
 
 # Add 4 corner points
 seeds.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
@@ -28,19 +28,23 @@ vor = Voronoi(seeds)
 vor.regions = [vor.regions[i] for i in vor.point_region]
 
 
-# plot area index in correct location and calculate total area
+# plot area in correct location and calculate total area
+
 total_area = 0
 for i, region in enumerate(vor.regions):
+    cell_area = 0
     cell_area = calc_area(vor,i,radius)
     plt.text(vor.points[i][0], vor.points[i][1] + 0.2,
-             f'{cell_area:.5g}', ha='center', va='center')
+            f'{cell_area:.3g}', ha='center', va='center')
     total_area += cell_area
 print("Total area:", total_area)
+
+
 
 # Plot vertex ID's in simple order of vor.vertices
 for i, vertex in enumerate(vor.vertices):
     # why does it output "array([x,y])" when printed?
-    plt.text(vertex[0], vertex[1] + 0.3, i, ha='center', va='center')
+    plt.text(vertex[0], vertex[1] + 0.2, i, ha='center', va='center')
 
 # plot seed ID according to point_region ID
 # for i, seed in enumerate(seeds):  # follows order of seeds array, then plots correct index number on seed location

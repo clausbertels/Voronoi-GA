@@ -1,6 +1,5 @@
 import random
 import math
-from skspatial.measurement import area_signed
 from scipy.spatial import voronoi_plot_2d, ConvexHull
 import matplotlib.pyplot as plt
 import numpy as np
@@ -70,7 +69,7 @@ def calc_area(voronoi_object, index, radius):
                 intersection_points.append(
                     circle_line_segment_intersection(radius, point1, point2))
 
-            # remove vertices outside circle from region
+            # remove vertices outside of circle from region
             reg = [vertex for vertex in reg if vertex not in outside_vertices]
 
             # remove empty arrays in intersection points (apparently not needed)
@@ -85,8 +84,11 @@ def calc_area(voronoi_object, index, radius):
                 intersection_points[0], intersection_points[1], radius)
             print("Segment area:", segment_area)
 
-        # add intersection points to polygon
+        # create polygon from region vertices
         polygon = [vertices[i] for i in reg]
+
+        # add intersection points to polygon
+        
         if intersection_points:
             intersection_points = [tuple(point)
                                    for point in intersection_points]
@@ -166,23 +168,6 @@ def circle_line_segment_intersection(radius, p1, p2):
 
         # return a list containing only the valid intersection points
         return [i for i in [intersection1, intersection2] if i is not None]
-
-
-# find ridges containing a point inside and one outside the circle
-
-    vertex_indices = voronoi_object.ridge_vertices[index]
-    ridge = []
-    for index in vertex_indices:
-        ridge.append(voronoi_object.vertices[index])
-
-    # if one of the vertices is outside and one inside, return true
-    if -1 in vertex_indices:
-        return False
-    else:
-        if any(vertex[0]**2 + vertex[1]**2 > radius**2 for vertex in ridge) and any(vertex[0]**2 + vertex[1]**2 < radius**2 for vertex in ridge):
-            return True
-        else:
-            return False
 
 
 def circle_segment_area(p1, p2, radius):
