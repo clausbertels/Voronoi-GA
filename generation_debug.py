@@ -6,16 +6,17 @@ from functions.func import (calc_area, generate_points, fitness)
 
 radius = 10
 # input_areas = [2,3,5,2,3,1,4,7,2,3,6,9,2,3,1] # 15 areas
-input_areas = np.random.randint(0,10,15).tolist()
+input_areas = np.random.randint(0,10,5).tolist()
 areas_length = len(input_areas)
-generations = 1000
+generations = 100
 treshold = 999
-iterations = 30
-deviation = .05 # percent
+iterations = 100
+best_amt = 5
+deviation = .05
 
 prevGen = []
 for _ in range(iterations):  # generate x random lists of length n with each tuple set within circle bounds
-    points = generate_points(areas_length, 10, "circle")
+    points = generate_points(areas_length, radius, "circle")
     points.extend([(-2*(10), -2*(10)), (-2*(10), 2*(10)),
               (2*(10), -2*(10)), (2*(10), 2*(10))])
     prevGen.append(points)
@@ -37,7 +38,7 @@ for g in range(generations):  # ######## GENERATION LOOP ##########
         print("Approximate solution found")
         break
 
-    best = ranked[:5]  # grab top x best solutions
+    best = ranked[:best_amt]  # grab top x best solutions
 
     best_ordered = []
     for i in range(areas_length):

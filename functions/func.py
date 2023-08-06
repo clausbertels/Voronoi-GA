@@ -72,7 +72,7 @@ def calc_area(voronoi_object, index, radius):
             reg = [vertex for vertex in reg if vertex not in outside_vertices]
 
             # remove empty arrays in intersection points (apparently not needed)
-            #intersection_points = [x for x in intersection_points if any(x)]
+            # intersection_points = [x for x in intersection_points if any(x)]
 
             # remove double brackets in intersection point array (didn't write this, it's so weird, but it works)
             intersection_points = [item for sublist in intersection_points for item in (
@@ -85,14 +85,18 @@ def calc_area(voronoi_object, index, radius):
 
         # create polygon from region vertices
         polygon = [vertices[i] for i in reg]
+        print(polygon)
+        print(intersection_points)
 
         # add intersection points to polygon
-        
+        ####### ISSUE: https://numpy.org/doc/stable/reference/generated/numpy.append.html
+        ####### there's a problem with the formatting of all the differnt types of arrays, lists, tuples and what not. Needs to be unified.
         if intersection_points:
-            intersection_points = [tuple(point)
-                                   for point in intersection_points]
-            intersection_points = np.array(intersection_points)
-            polygon = np.append(polygon, intersection_points, axis=0)
+            # intersection_points = [point
+            #                        for point in intersection_points]
+            # intersection_points = np.array(intersection_points)
+            polygon = np.append(polygon, intersection_points, axis=0) ###### ISSUE HERE
+
 
         
         # calculate polygon area and add the segment area
