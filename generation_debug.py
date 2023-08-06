@@ -50,14 +50,16 @@ for g in range(generations):  ######## GENERATION LOOP ##########
             best_ordered[i].append(e[1][i])
 
     newGen = []
-    for _ in range(400):  # generate x solutions based on the previous hundred random solutions
+    for _ in range(iterations):  # generate x solutions based on the previous hundred random solutions
         for c in range(areas_length):
             random_vector = generate_random_unit_vector(2)
             #deviation = random.uniform(0.01,0.05)
-            x = random.choice(best_ordered[c])[0] + random_vector[0] * deviation
-            y = random.choice(best_ordered[c])[1] + random_vector[1] * deviation
+            rand = random.choice(best_ordered[c])
+            x = rand[0] + random_vector[0] * deviation
+            y = rand[1] + random_vector[1] * deviation
             points.append((x, y))
         newGen.append(points)
         points = []
 
     prevGen = newGen
+    
