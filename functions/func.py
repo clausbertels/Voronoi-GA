@@ -49,6 +49,7 @@ def calc_area(voronoi_object, index, radius):
     # this function calculates area of region for only selected index
 
     reg = voronoi_object.regions[index]
+    #print(voronoi_object.points[index])
     vertices = voronoi_object.vertices
 
     # if the region is unbounded, return area of 0
@@ -85,8 +86,8 @@ def calc_area(voronoi_object, index, radius):
 
         # create polygon from region vertices
         polygon = [vertices[i] for i in reg]
-        print(polygon)
-        print(intersection_points)
+        #print(polygon)
+        #print(intersection_points)
 
         # add intersection points to polygon
         ####### ISSUE: https://numpy.org/doc/stable/reference/generated/numpy.append.html
@@ -102,10 +103,10 @@ def calc_area(voronoi_object, index, radius):
         # calculate polygon area and add the segment area
         if len(polygon) > 2:
             polygon_area = ConvexHull(polygon).volume
-            # print("polygon_area", polygon_area)
+            #print("polygon_area", polygon_area)
             return polygon_area + segment_area
         else:
-            return 0
+            return segment_area
 
 
 def find_ridges_containing_index(voronoi_object, index):
@@ -201,10 +202,18 @@ def mapper(number,total):
 def fitness(points, input_areas, radius):
     # print(len(points))
     # print(len(input_areas))
-    circle_area = np.pi*radius**2
+    circle_area = np.pi*(radius**2)
     sum_areas = 0    
     for i in range(len(points)-4):  # calculate area for every seed
         sum_areas += abs(mapper(calc_area(Voronoi(points), i, radius), circle_area)
                           - mapper(input_areas[i], sum(input_areas)))
           # sum the differences (using abs to calculate the magnitude of deltas
     return abs(1 / sum_areas)  # this is the fitness score
+
+
+def generate_random_unit_vector(dimensions):
+    components = [np.random.normal() for i in range(dimensions)]
+    r = math.sqrt(sum(x*x for x in components))
+    vector = [x/r for x in components]
+    return vector
+
