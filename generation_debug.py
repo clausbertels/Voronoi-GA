@@ -17,8 +17,6 @@ best_amt = 5
 prevGen = []
 for _ in range(iterations):  # generate x random lists of length n with each tuple set within circle bounds
     points = generate_points(areas_length, radius, "circle")
-    points.extend([(-2*(10), -2*(10)), (-2*(10), 2*(10)),
-              (2*(10), -2*(10)), (2*(10), 2*(10))])
     prevGen.append(points)
     #print(prevGen)
     #print(points)
@@ -53,7 +51,6 @@ for g in range(generations):  ######## GENERATION LOOP ##########
     for _ in range(iterations):  # generate x solutions based on the previous hundred random solutions
         for c in range(areas_length):
             random_vector = generate_random_unit_vector(2)
-            #deviation = random.uniform(0.01,0.05)
             rand = random.choice(best_ordered[c])
             x = rand[0] + random_vector[0] * deviation
             y = rand[1] + random_vector[1] * deviation

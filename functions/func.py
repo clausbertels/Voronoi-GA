@@ -203,9 +203,14 @@ def fitness(points, input_areas, radius):
     # print(len(points))
     # print(len(input_areas))
     circle_area = np.pi*(radius**2)
-    sum_areas = 0    
-    for i in range(len(points)-4):  # calculate area for every seed
-        sum_areas += abs(mapper(calc_area(Voronoi(points), i, radius), circle_area)
+    sum_areas = 0
+    points_copy = points.copy()
+    points_copy.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
+            (2*radius, -2*radius), (2*radius, 2*radius)])
+    voronoi_object = Voronoi(points_copy)
+    
+    for i in range(len(points)):  # calculate area for every seed
+        sum_areas += abs(mapper(calc_area(voronoi_object, i, radius), circle_area)
                           - mapper(input_areas[i], sum(input_areas)))
           # sum the differences (using abs to calculate the magnitude of deltas
     return abs(1 / sum_areas)  # this is the fitness score
