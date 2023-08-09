@@ -92,11 +92,10 @@ def calc_area(voronoi_object, index, radius):
         # add intersection points to polygon
         ####### ISSUE: https://numpy.org/doc/stable/reference/generated/numpy.append.html
         ####### there's a problem with the formatting of all the differnt types of arrays, lists, tuples and what not. Needs to be unified.
-        if intersection_points:
-            # intersection_points = [point
-            #                        for point in intersection_points]
-            # intersection_points = np.array(intersection_points)
-            polygon = np.append(polygon, intersection_points, axis=0) ###### ISSUE HERE
+        if intersection_points and polygon:
+            polygon = np.append(polygon, intersection_points, axis=0)
+        else:    
+            polygon = intersection_points
 
 
         
