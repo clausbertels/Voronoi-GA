@@ -79,13 +79,31 @@ def calc_area(voronoi_object, index, radius):
             intersection_points = [item for sublist in intersection_points for item in (
                 sublist if isinstance(sublist, list) else [sublist])]
 
+            
             # calculate circle segment area
-            segment_area = circle_segment_area(
-                intersection_points[0], intersection_points[1], radius)
+            if len (intersection_points) == 2:
+                segment_area = circle_segment_area(intersection_points[0], intersection_points[1], radius)
+            elif len(intersection_points) == 4:
+                distances = []
+                pairs = [(0,1),(0,2),(0,3),(1,2),(1,3),(2,3)]
+                for pair in pairs:
+                    distance = calculate_distance(intersection_points[pair[0]],intersection_points[pair[1]])
+                    distances.append(distance)
+                closest_points_indices = pairs[distances.index(min(distances))]
+                
+                item1 = intersection_points[closest_points_indices[0]]
+                item2 = intersection_points[closest_points_indices[1]]
+                intersection_points.pop(closest_points_indices[0])
+                intersection_points.pop(closest_points_indices[1]-1)
+                intersection_points.insert(0,item1)
+                intersection_points.insert(0,item2)
+
+                segment_area = circle_segment_area(intersection_points[0], intersection_points[1], radius) + circle_segment_area(intersection_points[2], intersection_points[3], radius)
             # print("Segment area:", segment_area)
 
         # create polygon from region vertices
         polygon = [vertices[i] for i in reg]
+        
         #print(polygon)
         #print(intersection_points)
 
@@ -94,9 +112,9 @@ def calc_area(voronoi_object, index, radius):
         ####### there's a problem with the formatting of all the differnt types of arrays, lists, tuples and what not. Needs to be unified.
         if intersection_points and polygon:
             polygon = np.append(polygon, intersection_points, axis=0)
-        else:    
+        elif intersection_points and not polygon:    
             polygon = intersection_points
-
+        #print(polygon)
 
         
         # calculate polygon area and add the segment area
@@ -104,6 +122,7 @@ def calc_area(voronoi_object, index, radius):
             polygon_area = ConvexHull(polygon).volume
             #print("polygon_area", polygon_area)
             return polygon_area + segment_area
+
         else:
             return segment_area
 
@@ -174,11 +193,16 @@ def circle_line_segment_intersection(radius, p1, p2):
 
 
 def circle_segment_area(p1, p2, radius):
-    chord_length = math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
+    chord_length = calculate_distance(p1,p2)
     theta = math.acos((radius**2 + radius**2 - chord_length**2)/(2*radius**2))
     area = 1/2 * (theta - math.sin(theta)) * radius**2
     return area
 
+def calculate_distance(point1, point2):
+    # Calculate the distance between two points
+    x1, y1 = point1
+    x2, y2 = point2
+    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
 def shoelace_algo(polygon):
     n = len(polygon)
@@ -203,7 +227,7 @@ def fitness(points, input_areas, radius):
     # print(len(input_areas))
     circle_area = np.pi*(radius**2)
     sum_areas = 0
-    points_copy = points.copy()
+    points_copy = points[:] # copies the points list because lists are mutable objects
     points_copy.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
             (2*radius, -2*radius), (2*radius, 2*radius)])
     voronoi_object = Voronoi(points_copy)

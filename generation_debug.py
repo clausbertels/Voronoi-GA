@@ -10,8 +10,8 @@ input_areas = np.random.randint(0,10,10).tolist()
 areas_length = len(input_areas)
 generations = 500
 treshold = 999
-deviation = 0.05
-iterations = 100
+deviation = 0.1
+iterations = 500
 best_amt = 5
 
 prevGen = []
@@ -20,7 +20,7 @@ for _ in range(iterations):  # generate x random lists of length n with each tup
     prevGen.append(points)
     #print(prevGen)
     #print(points)
-    print(fitness(points, input_areas, radius))
+    #print(fitness(points, input_areas, radius)) # big waste of resources to print this
 
 points = [] # flush points array
 
@@ -29,7 +29,8 @@ points = [] # flush points array
 for g in range(generations):  ######## GENERATION LOOP ##########
     ranked = []
     for solution in prevGen:  # list every solution with its fitness score, [solution] == [points]
-        ranked.append((fitness(solution, input_areas, radius), solution))
+        fitness_score = fitness(solution, input_areas, radius)
+        ranked.append((fitness_score, solution))
     ranked.sort()
     ranked.reverse()
 
