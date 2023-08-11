@@ -41,19 +41,20 @@ for g in range(GENERATIONS):  ######## GENERATION LOOP ##########
         break
 
     best = ranked[:BEST_AMOUNT]  # grab top x best solutions
-    #print(best)
+    # TODO: trim off the fitness scores from this list (best) so we don't have to use [1] in best_ordered
 
-    best_ordered = []
-    for i in range(AREAS_LENGTH):
-        best_ordered.append([])
-        for e in best: 
-            best_ordered[i].append(e[1][i])
+    best_ordered = [] 
+    for r in range(AREAS_LENGTH):
+        best_ordered.append([]) # generate a list for each region ordered by the region index
+        for s in best: # for every solution in best
+            best_ordered[r].append(s[1][r]) # grab a point by the region index and add it to its respective list
+                                            # [1] skips the fitness score and [r] selects 
 
     newGen = []
     for _ in range(ITERATIONS):  # generate x solutions based on the previous hundred random solutions
-        for c in range(AREAS_LENGTH):
+        for r in range(AREAS_LENGTH): # for each region
             random_vector = generate_random_unit_vector(2)
-            rand = random.choice(best_ordered[c])
+            rand = random.choice(best_ordered[r]) # pick a random point (x,y)
             x = rand[0] + random_vector[0] * DEVIATION
             y = rand[1] + random_vector[1] * DEVIATION
             points.append((x, y))
