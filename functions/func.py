@@ -72,9 +72,6 @@ def calc_area(voronoi_object, index, radius):
             # remove vertices outside of circle from region
             reg = [vertex for vertex in reg if vertex not in outside_vertices]
 
-            # remove empty arrays in intersection points (apparently not needed)
-            # intersection_points = [x for x in intersection_points if any(x)]
-
             # remove double brackets in intersection point array (didn't write this, it's so weird, but it works)
             intersection_points = [item for sublist in intersection_points for item in (
                 sublist if isinstance(sublist, list) else [sublist])]

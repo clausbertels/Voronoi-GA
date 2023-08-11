@@ -12,7 +12,7 @@ ax.set_facecolor("white")
 
 
 # INITIAL PARAMETERS
-radius = 10
+RADIUS = 10
 input_areas = [2,1,3,4,5,6,7,8,9,10]
 #points = [(0.15, 0.2), (0.1, 1.23), (0.05, 2.33), (1.23, 0.14), (1.25, 1.16),(1.28, 2.8), (2.21, 0.42), (2.41, 1.54), (2.21, 2.26)]  # 9 seed points
 #points = [[-1, 0], [0, 0], [-1, -1], [1, 1], [0, 1], [0, -1], [1, -1], [-1, 1], [1, 0]]  # grid point pattern
@@ -39,17 +39,21 @@ input_areas = [2,1,3,4,5,6,7,8,9,10]
 #points = [(6.147751915946035, -5.806922402098196), (0.8853339958561399, -4.233498335883363), (2.251076644172347, -5.510615813449133), (5.160370510149033, -6.682977388278171), (2.529697106883795, -9.587390367389467), (5.005120671048463, -8.436054319090868), (1.445196876195201, -5.2064899836566365), (-0.4604022237159544, -1.734817506956464)]
 #points = [(0.9945713442154354, -8.283378686546074), (5.939067321824416, 7.95331794411242), (5.793663203466668, 7.719237435954508), (-0.7273739013100471, -0.10419558310406529), (-7.127309281679448, -2.495319191085901), (-3.100056226511403, -0.8729912791562491), (-4.592513314402207, 1.4031216853287738), (0.5582327926542323, 0.38682109464502545)]
 
+points = [(-4.86296557563098, -2.6808243072104343), (7.206448221544115, 6.8939215787537655), (-3.8986144055628014, 6.100215535506138), (-7.131463571707801, -1.0899402571245087), (-1.0933033434048625, -9.54208468128607), (-8.284796248248687, -2.724090677901807), (5.911951598769136, -4.759342682265732), (6.989923650654582, 6.709851740919529), (1.0423380068367578, -2.0515286608595122), (-2.989835648642263, -0.9311847170957464), (1.8453430737670438, -6.069408333290454), (-1.6220706528408577, -8.042803744845212)]
+#points = [(-3.495942186206536, 3.247587316231204), (-0.7666511139001386, 1.9445724256535222), (-8.706951399103497, -4.892489498796049), (-3.3447006340057044, 6.387831430517142), (-1.548867480348461, -3.004336191487038), (0.5085579909360547, 7.53823366900545), (-8.58609734996775, -4.808178112004724), (7.402039901513831, 5.304338939990036), (3.687860850909157, 2.6218755240373337), (7.4861112169622075, 0.502643666015901), (-2.7236280807021345, 5.818407158646732), (4.47895744696546, 4.60082939454886)]
+#points = [(-2.748620715036081, 4.8743204957908866), (-2.2835950106292735, -4.29962987829165), (-1.1922295677688979, -0.6248050209847413), (-4.64758801698093, -0.05154599193895493), (1.4284532610784435, 2.6744125953082865), (-2.403568632684676, 4.482428866080934), (-7.338341192387389, -4.9247590905664556), (-7.266438854461454, -2.1653668768447325), (-5.831749348943516, 3.2189456274733104), (7.748828568278789, 5.886450572543167), (-5.001871892895515, -5.620935642489117), (7.725286683469342, 5.873160585438589)]
 
-points = generate_points(13, radius, "circle")
 
-#print(fitness(points,input_areas,radius))
+#points = generate_points(12, RADIUS, "circle")
+
+#print(fitness(points,input_areas,RADIUS))
 
 
 #print(points)
 
 # Add corner points
-points.extend([(-2*radius, -2*radius), (-2*radius, 2*radius),
-            (2*radius, -2*radius), (2*radius, 2*radius)])
+points.extend([(-2*RADIUS, -2*RADIUS), (-2*RADIUS, 2*RADIUS),
+            (2*RADIUS, -2*RADIUS), (2*RADIUS, 2*RADIUS)])
 
 # Create Voronoi Diagram
 vor = Voronoi(points)
@@ -63,14 +67,16 @@ vor.regions = [vor.regions[i] for i in vor.point_region]
 total_area = 0
 for i, region in enumerate(vor.regions):
     cell_area = 0
-    cell_area = calc_area(vor,i,radius)
+    cell_area = calc_area(vor,i,RADIUS)
     
     plt.text(vor.points[i][0], vor.points[i][1] + 0.2,
             f'{cell_area:.3g}', ha='center', va='center')
     total_area += cell_area
-    print(total_area)
 
-
+#if total_area > 314.16 or total_area < 314.158:
+#    print("Total area:", total_area)
+#    #if abs(314 - total_area) > 0:
+#    print(points)
 
 
 
@@ -115,7 +121,7 @@ for i, vertex in enumerate(vor.vertices):
 # print how many ridges intersect circle
 # is_intersecting = []
 # for i in range(len(vor.ridge_vertices)):
-#    is_intersecting.append(is_ridge_intersecting_circle(radius, vor, i))
+#    is_intersecting.append(is_ridge_intersecting_circle(RADIUS, vor, i))
 # print(is_intersecting.count(True))
 
 # print ridges of each region
@@ -129,15 +135,15 @@ for i, vertex in enumerate(vor.vertices):
 # PLOT
 voronoi_plot_2d(vor, ax=ax, line_colors="blue",
                 line_width=1, point_colors="gray")
-plt.xlim(-(radius + 2), (radius + 2))
-plt.ylim(-(radius + 2), (radius + 2))
+plt.xlim(-(RADIUS + 2), (RADIUS + 2))
+plt.ylim(-(RADIUS + 2), (RADIUS + 2))
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.title("Voronoi Diagram, Total Area of cells: " + str(total_area))
 plt.grid(True)
 plt.gca().set_aspect('equal')
 
-ax.add_patch(plt.Circle((0, 0), radius=radius, fill=False, color='gray'))
+ax.add_patch(plt.Circle((0, 0), radius=RADIUS, fill=False, color='gray'))
 
 plt.show()
 
