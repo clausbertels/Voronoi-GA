@@ -1,7 +1,5 @@
 import random
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.spatial import Voronoi, voronoi_plot_2d
 from functions.func import (generate_points, fitness, generate_random_unit_vector)
 
 RADIUS = 10
